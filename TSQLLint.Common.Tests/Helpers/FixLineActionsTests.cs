@@ -222,6 +222,19 @@ namespace TSQLLint.Common.Tests.Helpers
             Assert.AreEqual(1, Violations[0].Line);
         }
 
+        [Test]
+        public void UpdateLine()
+        {
+            var content = "Replacement content";
+
+            Subject.UpdateLine(2, content);
+
+            Assert.That(Lines[2], Is.EqualTo(content));
+            // UpdateLine replaces the whole line and does not touch violation positions.
+            Assert.That(Violations[0].Line, Is.EqualTo(3));
+            Assert.That(Violations[0].Column, Is.EqualTo(1));
+        }
+
         private void SetupDefaultLines()
         {
             Lines = new List<string>
