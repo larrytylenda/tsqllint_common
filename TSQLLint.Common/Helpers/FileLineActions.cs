@@ -66,10 +66,13 @@ namespace TSQLLint.Common
             line = line.Remove(charIndex, length);
             FileLines[lineIndex] = line;
 
-            foreach (var v in RuleViolations.Where(x => x.Column == lineIndex + 1
+            foreach (var v in RuleViolations.Where(x => x.Line == lineIndex + 1
                 && x.Column > charIndex))
             {
-                v.Column -= length;
+                // Violations after the removed span shift left by length; violations
+                // inside the span (their character was deleted) clamp to the start of
+                // the removal so the column can never become zero or negative.
+                v.Column = Math.Max(charIndex + 1, v.Column - length);
             }
         }
 
